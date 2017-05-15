@@ -4,7 +4,7 @@ describe Oystercard do
   it "have a balance of zero." do
     expect(subject.balance).to eq 0
   end
-  
+
   describe "#top_up" do
 
     it "can top up the balance" do
@@ -22,8 +22,33 @@ describe Oystercard do
 
     it "deducts an amount from the balance" do
       subject.top_up(50)
-      expect { subject.deduct(1) }.to change { subject.balance }.by -1
+      expect { subject.deduct(1) }.to change { subject.balance }.by(-1)
     end
 
+  end
+
+  describe "#in_journey?" do
+
+    it "is initially not in journey" do
+      expect(subject).not_to be_in_journey
+    end
+
+  end
+
+  describe "#touch_in" do
+
+    it "can touch in" do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+  end
+
+  describe "#touch_out" do
+
+    it "can touch out" do
+        subject.touch_in
+        subject.touch_out
+        expect(subject).not_to be_in_journey
+      end
   end
 end

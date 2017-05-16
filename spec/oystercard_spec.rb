@@ -21,43 +21,38 @@ describe Oystercard do
     end
   end
 
-  describe "#deduct" do
-
-    it "deducts an amount from the balance" do
-      card.top_up(50)
-      expect { card.deduct(1) }.to change { card.balance }.by(-1)
-    end
-
-  end
-
   describe "#in_journey?" do
 
     it "is initially not in journey" do
       expect(card).not_to be_in_journey
     end
-
   end
 
   describe "#touch_in" do
 
     it "can touch in" do
-      card.top_up(Oystercard::MINIMUM_BALANCE)
+      card.top_up(Oystercard::MINIMUM_FARE)
       card.touch_in
       expect(card).to be_in_journey
     end
 
-    it "raise error if balance is below #{Oystercard::MINIMUM_BALANCE}£" do
-      expect{ card.touch_in }.to raise_error "Balance below minimum."
+    it "raise error if balance is below #{Oystercard::MINIMUM_FARE}£" do
+      expect { card.touch_in }.to raise_error "Balance below minimum."
     end
   end
 
   describe "#touch_out" do
 
     it "can touch out" do
-        card.top_up(Oystercard::MINIMUM_BALANCE)
-        card.touch_in
-        card.touch_out
-        expect(card).not_to be_in_journey
-      end
+      card.top_up(Oystercard::MINIMUM_FARE)
+      card.touch_in
+      card.touch_out
+      expect(card).not_to be_in_journey
+    end
+
+    it "deducts #{Oystercard::MINIMUM_FARE} from balance" do
+      card.top_up(Oystercard::MINIMUM_FARE)
+      expect { card.touch_out }.to change { card.balance }.by(-1)
+    end
   end
 end

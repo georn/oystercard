@@ -55,24 +55,30 @@ describe Oystercard do
 
   describe "#touch_out" do
 
-    let(:station) { double(:station) }
+    let(:entry_station) { double(:station) }
+    let(:exit_station) { double(:station) }
+
+    it "return the exit station" do
+      card.touch_out(exit_station)
+      expect(card.exit_station).to eq exit_station
+    end
 
     it "can touch out" do
       # card.top_up(Oystercard::MINIMUM_FARE)
       # card.touch_in
-      card.touch_out
+      card.touch_out(exit_station)
       expect(card).not_to be_in_journey
     end
 
     it "deducts #{Oystercard::MINIMUM_FARE} from balance" do
       card.top_up(Oystercard::MINIMUM_FARE)
-      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
+      expect { card.touch_out(exit_station) }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
     end
 
     it "forgets the entry station" do
       card.top_up(Oystercard::MINIMUM_FARE)
-      card.touch_in(station)
-      expect {card.touch_out}.to change {card.entry_station}.to(nil)
+      card.touch_in(entry_station)
+      expect { card.touch_out(exit_station) }.to change {card.entry_station}.to(nil)
     end
   end
 end

@@ -4,7 +4,7 @@ describe Oystercard do
 
   subject(:card) { Oystercard.new }
 
-  it "have a balance of zero." do
+  it "have a starting balance of zero." do
     expect(card.balance).to eq 0
   end
 
@@ -32,23 +32,21 @@ describe Oystercard do
 
     let(:station) { double(:station) }
 
-    it "touch in receive an argument" do
-      expect(card).to respond_to(:touch_in).with(1).argument
-    end
-
-    it "can touch in" do
-      card.top_up(Oystercard::MINIMUM_FARE)
-      card.touch_in(station)
-      expect(card).to be_in_journey
-    end
-
-    it "raise error if balance is below #{Oystercard::MINIMUM_FARE}£" do
+    it "raise error if balance is below £ #{Oystercard::MINIMUM_FARE}" do
+      card.touch_out(station)
       expect { card.touch_in(station) }.to raise_error "Balance below minimum."
     end
 
-    it "returns the station" do
+    before do
       card.top_up(Oystercard::MINIMUM_FARE)
       card.touch_in(station)
+    end
+
+    it "can touch in" do
+      expect(card).to be_in_journey
+    end
+
+    it "returns the station" do
       expect(card.entry_station).to eq station
     end
   end
@@ -58,14 +56,7 @@ describe Oystercard do
     let(:entry_station) { double(:station) }
     let(:exit_station) { double(:station) }
 
-    it "return the exit station" do
-      card.touch_out(exit_station)
-      expect(card.exit_station).to eq exit_station
-    end
-
     it "can touch out" do
-      # card.top_up(Oystercard::MINIMUM_FARE)
-      # card.touch_in
       card.touch_out(exit_station)
       expect(card).not_to be_in_journey
     end
@@ -79,6 +70,23 @@ describe Oystercard do
       card.top_up(Oystercard::MINIMUM_FARE)
       card.touch_in(entry_station)
       expect { card.touch_out(exit_station) }.to change {card.entry_station}.to(nil)
+    end
+  end
+
+  describe "#journey_list" do
+
+    let(:entry_station) { double(:station) }
+    let(:exit_station) { double(:station) }
+
+    it "returns an empty list by default" do
+      expect(card.journey_list).to eq []
+    end
+
+    it "returns a list for one journey" do
+      card.top_up(Oystercard::MINIMUM_FARE)
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.journey_list).to eq [{entry: entry_station, exit: exit_station}]
     end
   end
 end

@@ -30,29 +30,49 @@ describe Oystercard do
 
   describe "#touch_in" do
 
+    let(:station) { double(:station) }
+
+    it "touch in receive an argument" do
+      expect(card).to respond_to(:touch_in).with(1).argument
+    end
+
     it "can touch in" do
       card.top_up(Oystercard::MINIMUM_FARE)
-      card.touch_in
+      card.touch_in(station)
       expect(card).to be_in_journey
     end
 
     it "raise error if balance is below #{Oystercard::MINIMUM_FARE}£" do
-      expect { card.touch_in }.to raise_error "Balance below minimum."
+      expect { card.touch_in(station) }.to raise_error "Balance below minimum."
+    end
+
+    it "returns the station" do
+      card.top_up(Oystercard::MINIMUM_FARE)
+      card.touch_in(station)
+      expect(card.entry_station).to eq station
     end
   end
 
   describe "#touch_out" do
 
+    let(:station) { double(:station) }
+
     it "can touch out" do
-      card.top_up(Oystercard::MINIMUM_FARE)
-      card.touch_in
+      # card.top_up(Oystercard::MINIMUM_FARE)
+      # card.touch_in
       card.touch_out
       expect(card).not_to be_in_journey
     end
 
     it "deducts #{Oystercard::MINIMUM_FARE} from balance" do
       card.top_up(Oystercard::MINIMUM_FARE)
-      expect { card.touch_out }.to change { card.balance }.by(-1)
+      expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
+    end
+
+    it "forgets the entry station" do
+      card.top_up(Oystercard::MINIMUM_FARE)
+      card.touch_in(station)
+      expect {card.touch_out}.to change {card.entry_station}.to(nil)
     end
   end
 end

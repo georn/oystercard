@@ -1,13 +1,19 @@
 require 'oystercard'
 
+class Station
+end
+
 card = Oystercard.new
+station = Station.new
 
 card.top_up(5)
 
-p card.balance
+p card.entry_station
 
-card.touch_in
+card.touch_in(station)
+
+p card.entry_station
 
 card.touch_out
 
-p card.balance #=> 4
+p card.entry_station

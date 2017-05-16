@@ -6,8 +6,8 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @entry_station
-    @exit_station
+    @entry_station = nil
+    @exit_station = nil
     @journey_list = []
   end
 
@@ -35,9 +35,8 @@ class Oystercard
   private
 
   def log_journey
-    journey_list.push({entry: entry_station, exit: exit_station})
+    journey_list.push(entry: entry_station, exit: exit_station)
   end
-
 
   def deduct(amount)
     @balance -= amount

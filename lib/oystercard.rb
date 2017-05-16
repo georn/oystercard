@@ -3,6 +3,7 @@ class Oystercard
   attr_reader :balance, :in_use
 
   BALANCE_LIMIT = 90
+  MINIMUM_BALANCE = 1
 
   def initialize
     @balance = 0
@@ -23,6 +24,7 @@ class Oystercard
   end
 
   def touch_in
+    raise "Balance below minimum." if @balance < MINIMUM_BALANCE
     @in_use = true
   end
 

@@ -1,4 +1,4 @@
-# Oystercard
+# Oystercard [![Build Status](https://travis-ci.org/georn/oystercard.svg?branch=master)](https://travis-ci.org/georn/oystercard) [![Coverage Status](https://coveralls.io/repos/github/georn/oystercard/badge.svg?branch=master)](https://coveralls.io/github/georn/oystercard?branch=master)
 **Week 2 Challenge at Makers Academy**
 
 ## User Stories
